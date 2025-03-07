@@ -51,5 +51,3 @@ int main()
         }
     }
 }
-
-// check if gh is working fine now
