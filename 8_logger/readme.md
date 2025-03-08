@@ -31,18 +31,15 @@
 
 ### Logger.h
 
-
-
-
-FLOW
-LOGLEVEL
-LOGDESTINATION
-ConsoleLogger
-FileLogger
-DatabaseLogger
-LoggerConfig.cpp
-Logger.cpp
-main.cpp
+- FLOW
+- LOGLEVEL
+- LOGDESTINATION
+- ConsoleLogger
+- FileLogger
+- DatabaseLogger
+- LoggerConfig.cpp
+- Logger.cpp
+- main.cpp
 
 Take away from fileLogger
 ```
