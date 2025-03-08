@@ -35,3 +35,7 @@ The poll object is expected to contain a list of questions. In the update poll m
 ### Additional Information
 - The user class is responsible for managing user-related data and actions.
 - The poll manager handles the creation, updating, deletion, and voting processes for polls.
+
+
+
+noice and easy
