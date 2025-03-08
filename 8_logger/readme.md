@@ -41,6 +41,8 @@ ConsoleLogger
 FileLogger
 DatabaseLogger
 LoggerConfig.cpp
+Logger.cpp
+main.cpp
 
 Take away from fileLogger
 ```
