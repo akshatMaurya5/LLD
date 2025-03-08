@@ -1,0 +1,10 @@
+2025-03-08 12:06:41 [DEBUG] This is a debug message.
+
+2025-03-08 12:06:41 [INFO] System started successfully.
+
+2025-03-08 12:06:41 [WARNING] Disk space running low.
+
+2025-03-08 12:06:41 [ERROR] Failed to open configuration file.
+
+2025-03-08 12:06:41 [FATAL] System crash detected!
+
