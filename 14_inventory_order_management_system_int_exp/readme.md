@@ -17,3 +17,5 @@ I implemented the solution correctly, but for inventory locking, I initially cre
 - **Inventory**: manages stock, blocks inventory on creating order, reduces stock on confirmation
 - **Order**: represents order id, list of product-quantity pairs, status
 - **Order Manager**: manages orders
+
+done

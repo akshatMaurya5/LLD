@@ -43,7 +43,6 @@ public:
             }
         }
 
-        // Create new order and add products
         Order *newOrder = new Order(orderId, productQuantities);
         orders[orderId] = newOrder;
         return true;

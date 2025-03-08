@@ -12,7 +12,7 @@ int main()
     map<int, int> orderItemsMap(orderItems.begin(), orderItems.end());
     if (orderManager.createOrder(1001, orderItems))
     {
-        std::cout << "Order 1001 created.\n";
+        cout << "Order 1001 created.\n";
     }
 
     inventory.getStock(1);
