@@ -15,6 +15,9 @@
    - The system should handle concurrent access and ensure data consistency.
 
 
+## IMPORTANT
+- Instead of like usual post, we post questions in post.
+
 
 ## My Plan
 
