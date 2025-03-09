@@ -2,3 +2,14 @@ key value store : https://workat.tech/machine-coding/practice/design-key-value-s
 
 
 do elevator system again from gh only.
+
+
+
+
+to revise:
+1. splitwise
+2, parking lot
+3. social media
+4. polling system
+5. inventory management system
+6. sprint planner
