@@ -1,7 +1,7 @@
 
 ## To Revise
 
-1. - [x] **Splitwise**
+1. - ✅ **Splitwise**
    - [Link](https://leetcode.com/discuss/post/5650118/meesho-sde-2-bengaluru-july-2024-reject-3wsyy/)
 
 2. - [ ] **Parking Lot**
@@ -21,5 +21,5 @@
 6. - [ ] **Sprint Planner**
    - [Link](https://leetcode.com/discuss/post/5049988/meesho-machine-coding-sprint-planner-by-7vjwi/)
 
-7. - [x] **Cab Booking Platform**
+7. - ✅ **Cab Booking Platform**
    - [Link](https://leetcode.com/discuss/post/5740341/meesho-sde-1-bengaluru-sept-2024-accepte-vvm8/)
