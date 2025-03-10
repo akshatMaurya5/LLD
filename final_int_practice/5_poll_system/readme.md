@@ -46,3 +46,8 @@ You are required to design and implement an online polling system. The system sh
 
 - Poll Class:
     - string pollid, string questions, vector<string> options
+
+
+
+
+    https://leetcode.com/discuss/post/6169896/meesho-lld-machine-round-sde-1-backend-b-ps2p/
