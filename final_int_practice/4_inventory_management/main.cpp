@@ -6,221 +6,189 @@ class Product
 public:
     int productId;
     int availableStock;
-    int lockedStock;
+    int blockedStock;
 
-    Product() {}
-
-    Product(int id, int quantity)
+    Product(int id, int qty)
     {
         this->productId = id;
-        this->availableStock = quantity;
-        lockedStock = 0;
-    }
-};
-
-class Order
-{
-public:
-    int orderId;
-    map<int, int> cart; // productId -> quantity
-    // bool isConfirmed;
-
-    Order() {}
-
-    Order(int id, map<int, int> products)
-    {
-        this->orderId = id;
-        this->cart = products;
-    }
-
-    int getOrderId() const
-    {
-        return orderId;
+        this->availableStock = qty;
+        this->blockedStock = 0;
     }
 };
 
 class Inventory
 {
-private:
-    map<int, Product> stock;
+public:
+    map<int, Product *> products;
     bool isLocked = false;
 
-public:
-    Inventory() {}
-
-    void addProduct(int productId, int quantity)
+    void addItem(int prodId, int quantity)
     {
-        if (!stock.count(productId))
+        if (products.count(prodId))
         {
-            stock[productId] = Product(productId, quantity);
+            products[prodId]->availableStock += quantity;
         }
         else
         {
-            stock[productId].availableStock += quantity;
+            products[prodId] = new Product(prodId, quantity);
         }
     }
 
-    bool createOrder(const Order &order)
+    void blockStock(int prodId, int quantity)
     {
-        if (isLocked)
+        if (!products.count(prodId))
         {
-            cout << "Inventory is locked right now...." << endl;
+            cout << "Product not found\n";
+            return;
+        }
+        Product *product = products[prodId];
+        if (product->availableStock < quantity)
+        {
+            cout << "Out of stock\n";
+            return;
+        }
+        product->availableStock -= quantity;
+        product->blockedStock += quantity;
+    }
+
+    void unblockStock(int prodId, int quantity)
+    {
+        if (!products.count(prodId) || products[prodId]->blockedStock < quantity)
+        {
+            cout << "Insufficient blocked stock to unblock\n";
+            return;
+        }
+        products[prodId]->blockedStock -= quantity;
+        products[prodId]->availableStock += quantity;
+    }
+
+    bool confirmStock(int prodId, int qty)
+    {
+        if (!products.count(prodId) || products[prodId]->blockedStock < qty)
+        {
+            cout << "Insufficient blocked stock to confirm\n";
             return false;
         }
-
-        isLocked = true;
-
-        // run this for all items before
-        for (auto &item : order.cart)
-        {
-            int productId = item.first;
-            int qty = item.second;
-
-            if (!stock.count(productId) || stock[productId].availableStock < qty)
-            {
-                cout << "Product not available\n";
-                isLocked = false;
-                return false;
-            }
-        }
-
-        // now start locking the items
-
-        for (auto &item : order.cart)
-        {
-            int productId = item.first;
-            int qty = item.second;
-
-            stock[productId].availableStock -= qty;
-            stock[productId].lockedStock += qty;
-        }
-
-        isLocked = false;
+        products[prodId]->blockedStock -= qty;
         return true;
     }
 
-    bool confirmOrder(Order &order)
+    int getStock(int prodId)
     {
-
-        if (isLocked)
-            return false;
-        isLocked = true;
-
-        for (auto item : order.cart)
-        {
-            int productId = item.first;
-            int qty = item.second;
-
-            if (!stock.count(productId) || stock[productId].lockedStock < qty)
-            {
-                isLocked = false;
-                return false;
-            }
-        }
-
-        // now confirm all the orders
-
-        for (auto &item : order.cart)
-        {
-
-            int productId = item.first;
-            int qty = item.second;
-
-            stock[productId].lockedStock -= qty;
-        }
-
-        isLocked = false;
-        return true;
+        return products.count(prodId) ? products[prodId]->availableStock : 0;
     }
 
-    int getStock(int productId)
+    bool canOrder(int prodId, int quantity)
     {
-        return stock.count(productId) ? stock[productId].availableStock : 0;
+        return products.count(prodId) && products[prodId]->availableStock >= quantity;
     }
+
+    void lockInventory() { isLocked = true; }
+    void unlockInventory() { isLocked = false; }
+    bool isInventoryLocked() const { return isLocked; }
+};
+
+class Order
+{
+private:
+    int orderId;
+    map<int, int> cart;
+
+public:
+    Order(int id) : orderId(id) {}
+    int getOrderId() const { return orderId; }
+    void addProduct(int prodId, int quantity) { cart[prodId] += quantity; }
+    map<int, int> getCart() { return cart; }
 };
 
 class OrderManager
 {
 private:
     Inventory inventory;
-    map<int, Order> orders;
+    map<int, Order *> orders;
     int nextOrderId = 1;
 
 public:
-    void addProduct(int productId, int quantity)
-    {
-        inventory.addProduct(productId, quantity);
-    }
+    void addProduct(int prodId, int count) { inventory.addItem(prodId, count); }
 
-    bool createOrder(map<int, int> toOrder)
+    void createOrder(vector<pair<int, int>> &orderedProducts)
     {
-        Order newOrder = Order(nextOrderId++, toOrder);
-
-        if (inventory.createOrder(newOrder))
+        if (inventory.isInventoryLocked())
         {
-            orders[newOrder.getOrderId()] = newOrder;
-            return true;
+            cout << "Inventory is locked\n";
+            return;
         }
-        return false;
+
+        Order *order = new Order(nextOrderId++);
+
+        for (auto item : orderedProducts)
+        {
+            if (!inventory.canOrder(item.first, item.second))
+            {
+                cout << "Item out of stock\n";
+                delete order;
+                return;
+            }
+        }
+
+        inventory.lockInventory();
+
+        for (auto item : orderedProducts)
+        {
+            inventory.blockStock(item.first, item.second);
+            order->addProduct(item.first, item.second);
+        }
+
+        orders[order->getOrderId()] = order;
+        inventory.unlockInventory();
     }
 
-    bool confirmOrder(int orderId)
+    void confirmOrder(int orderId)
     {
         if (!orders.count(orderId))
-            return false;
-        return inventory.confirmOrder(orders[orderId]);
+        {
+            cout << "Order not found\n";
+            return;
+        }
+        inventory.lockInventory();
+        Order *order = orders[orderId];
+        for (auto &item : order->getCart())
+        {
+            if (!inventory.confirmStock(item.first, item.second))
+            {
+                cout << "Insufficient blocked stock to confirm\n";
+                inventory.unlockInventory();
+                return;
+            }
+        }
+        inventory.unlockInventory();
     }
 
-    int getStock(int productId)
-    {
-        return inventory.getStock(productId);
-    }
+    int getStock(int productId) { return inventory.getStock(productId); }
 };
 
 int main()
 {
-    // #ifndef ONLINE_JUDGE
-    //     freopen("input.txt", "r", stdin);
-    //     freopen("error.txt", "w", stderr);
-    //     freopen("output.txt", "w", stdout);
-    // #endif
+#ifndef ONLINE_JUDGE
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+    freopen("error.txt", "w", stderr);
+#endif
 
-    OrderManager oms;
+    OrderManager orderManager;
+    orderManager.addProduct(1, 100);
+    orderManager.addProduct(2, 50);
 
-    // Adding products
-    oms.addProduct(101, 50);
-    oms.addProduct(102, 30);
+    vector<pair<int, int>> products = {{1, 10}, {2, 5}};
+    orderManager.createOrder(products);
 
-    // Create an order
-    map<int, int> order1 = {{101, 10}, {102, 5}};
+    cout << "Stock of product 1: " << orderManager.getStock(1) << endl;
+    cout << "Stock of product 2: " << orderManager.getStock(2) << endl;
 
-    // FIX: Removed extra parameter (1)
-    if (oms.createOrder(order1))
-    {
-        cout << "Order 1 created successfully!\n";
-    }
-    else
-    {
-        cout << "Order 1 creation failed!\n";
-    }
+    orderManager.confirmOrder(1);
 
-    // Get stock after order creation
-    cout << "Stock for 101: " << oms.getStock(101) << "\n"; // Should be 40
-    cout << "Stock for 102: " << oms.getStock(102) << "\n"; // Should be 25
-
-    // Confirm order
-    if (oms.confirmOrder(1))
-    {
-        cout << "Order 1 confirmed successfully!\n";
-    }
-    else
-    {
-        cout << "Order 1 confirmation failed!\n";
-    }
-
-    // Get stock after order confirmation
-    cout << "Stock for 101 after confirmation: " << oms.getStock(101) << "\n"; // Should still be 40
-    cout << "Stock for 102 after confirmation: " << oms.getStock(102) << "\n"; // Should still be 25
+    cout << "Stock of product 1: " << orderManager.getStock(1) << endl;
+    cout << "Stock of product 2: " << orderManager.getStock(2) << endl;
 
     return 0;
 }
