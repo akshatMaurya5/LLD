@@ -6,7 +6,7 @@
 
 2. - [ ] **Parking Lot**
 
-3. - [ ] **Social Media**
+3. - ✅ **Social Media**
    - [Link 1](https://leetcode.com/discuss/post/5925685/meesho-machine-coding-sde-1-backend-oct-lfc0l/)
    - [Link 2](https://leetcode.com/discuss/post/5668668/meesho-sde-1-backend-bangalore-july-2024-fdlp/)
    - [Link 3](https://leetcode.com/discuss/post/1993995/meesho-machine-coding-dsa-sde2-by-pratee-0lcn/)
