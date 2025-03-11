@@ -1,0 +1,5 @@
+[Tue Mar 11 22:35:18 2025] [DEBUG] This is a debug message.
+[Tue Mar 11 22:35:18 2025] [INFO] This is an info message.
+[Tue Mar 11 22:35:18 2025] [WARNING] This is a warning message.
+[Tue Mar 11 22:35:18 2025] [ERROR] This is an error message.
+[Tue Mar 11 22:35:18 2025] [FATAL] This is a fatal message.
