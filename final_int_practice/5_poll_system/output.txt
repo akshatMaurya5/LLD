@@ -1,0 +1,3 @@
+User1 created Poll with ID: poll_1
+User2 tried to delete the poll. Success: No
+User1 tried to delete the poll. Success: Yes
